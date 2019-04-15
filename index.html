@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tarea 2 - VUE</title>
+
+  <link rel="icon" type="image/png" href="imagenes/logo.ico" /> 
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/style.css"> 
+
+</head>
+
+<body>  
+
+<!-- En este caso, vamos a crear un array llamado personas, el cual incluye objetos cn 2 atributos que son nombre y edad
+
+En primer lugar, nos pide una lista la cual escribiremos en el script tanto el nombre como la edad de cada objeto
+
+Despues en el html, un div a traves de un bucle for va a pintar esa lista ordenada por edad. -->
+
+<div class="container">
+
+  <h1>Personas</h1>
+
+  <!-- Primera parte. Lista que va a mostrar el nombre y edad de todas las personas de la lista ordenadas por edad
+
+  En el bucle v-for con persona in personas le estamos diciendo que por cada objeto (osea, por cada persona) dentro del array Personas (array que creamos en el script)
+  que con orderBy 'edad'" , por un lado al poner orderBy le estamos diciendo que nos ordene, y por otro lado nos va a ordenar el atributo que le indicquemos entre comillas, 
+  en este caso por el atributo edad , y ya por ultimo le decimos que atributos nos va a mostrar de cada objeto (persona),que son el nombre y la edad
+-->
+
+<h2>Todas las personas ordenadas por edad</h2>
+
+<ul class="list-group">
+  <li v-for="persona in personas | orderBy 'edad'" class="list-group-item lista" >
+    {{ persona.nombre }} - {{ persona.edad }} años
+  </li>
+</ul>
+
+<br>
+
+  <!-- Segunda parte. Lista que va a mostrar el nombre y edad de las personas mayores de 55 años.
+
+  En este caso, necesitamos una lista personalizada al pedir una edad determinada y no un orden de edad solamente como en el caso anterior, 
+  por tanto, voy a usar el ejemplo de los apuntes llamado Filtro personalizado "famous"
+
+  Asi que, donde en el ejercicio primero he usado orderBy, lo voy a sustituir por una funcion personalizada,
+  Por tanto, le digo que por cada persona del array personas, y dependiendo de la funcion personalizada llamada mayor55, va a mostrar en este caso,
+  las personas mayores de 55 años.
+
+  y ahora en el script, creo la funcion personalizada llamada mayor55  -->
+
+  <h2>Personas mayores de 55 años</h2>
+  <ul class="list-group">
+    <li v-for="persona in personas | mayor55" class="list-group-item lista">
+      {{ persona.nombre }} - {{ persona.edad }} años
+    </li>
+  </ul>
+
+  <br>
+
+  <!-- Lista para un rango de edad. En el script he creado la funcion personalizada -->
+
+  <h2>Personas en un rango de edad: (30-40)</h2>
+
+  <ul class="list-group">
+    <li v-for="persona in personas | busquedaEdad" class="list-group-item lista">
+      {{ persona.nombre }} - {{ persona.edad }} años
+    </li>
+  </ul>
+
+  <br>
+
+  <!-- BUSQUEDAS -->
+
+  <!-- En este caso, le digo en el bucle v-for, que por cada persona del array personas filtre segun el valor del input llamado busquedaNombre (en los apuntes llamado query)
+    y comparandolo con el atributo nombre de cada persona, muestre las personas y sus atributos que posean las letras introducidas en el input -->
+
+    <hr>
+
+    <ul class="list-group">
+
+      <label>Buscar por Nombre</label>
+      <input type="text" v-model="busquedaNombre" class="form-control my-3 campo" placeholder="Introduce un nombre">
+
+      <li v-for="persona in personas | filterBy busquedaNombre in 'nombre'" class="list-group-item lista">
+        {{persona.nombre}} - {{persona.edad}} años
+      </li>
+
+    </ul>
+
+    <br>
+
+    <!-- y lo mismo para la edad -->
+
+    <ul class="list-group">
+
+      <label>Buscar por Edad</label>
+      <input type="number" v-model="busquedaEdad" class="form-control my-3 campo" placeholder="Introduce una edad">
+
+      <li v-for="persona in personas | filterBy busquedaEdad in 'edad'" class="list-group-item lista">
+        {{persona.nombre}} - {{persona.edad}} años
+      </li>
+
+    </ul>
+
+
+
+    <!-- Busqueda usando bien el nombre o bien la edad -->
+    <hr>
+    <h2>Busqueda por nombre o edad (combinada)</h2>
+    <hr>
+
+    <ul class="list-group">
+
+     
+      <input type="text" v-model="busquedaNombre"  class="form-control my-1 campo" placeholder="Buscar por nombre">
+
+      <input type="number" v-model="busquedaEdad"  class="form-control my-1 campo" placeholder="Buscar por edad">
+      
+      <li v-for="persona in personas | filterBy busquedaNombre in 'nombre' | filterBy busquedaEdad in 'edad'" class="list-group-item lista" >
+        {{ persona.nombre }}, {{ persona.edad }}
+      </li>
+
+    </ul>
+
+
+  </div>
+
+
+  <!-- SCRIPT -->
+
+  <!-- Libreria vue -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.js"> </script>
+
+  <script>
+
+  /* FUNCION PERSONALIZADA LLAMADA mayor 55, para mostrar en el html los objetos (personas) mayores de 55 años en este caso.
+
+  Por tanto, replicando el ejemplo de los apuntes, le digo que:
+
+  A Vue.filter llamado mayor55, le pasamos el array llamado personas
+  y devuelve los item  del array (objetos o personas) con sus respectivos atributos, de aquellas personas con edad mayor de 55 años
+
+  */
+
+  Vue.filter('mayor55', function (personas) {
+    return personas.filter (function (item) {
+      return item.edad > 55;
+    });
+  });
+
+  /* FUNCION PERSONALIZADA con rango, para mostrar en el html los objetos (personas) mayores de 30 y menores de 40 años */
+
+  Vue.filter('busquedaEdad', function (personas) {
+    return personas.filter (function (item) {     
+      return item.edad>30&&item.edad<40;
+    });
+  });
+
+//ARRAY DE PERSONAS
+new Vue({
+  el: '.container',
+  data: {
+    personas: [
+    {
+      nombre: "Julian",
+      edad: 20
+    },
+    {
+      nombre: "Alberto",
+      edad: 35
+    },
+    {
+      nombre: "Marta",
+      edad: 28
+    },
+    {
+      nombre: "Sara",
+      edad: 57
+    },
+    {
+      nombre: "Vanessa",
+      edad: 74
+    },
+    {
+      nombre: "Lucas",
+      edad: 49
+    },
+    ], 
+
+  }
+});
+
+
+</script>
+
+</body>
+</html>
+
