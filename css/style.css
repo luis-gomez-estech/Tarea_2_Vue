@@ -1,13 +1,13 @@
 
 body {
-  background: #6251a1;
+  background: #03A16D;
 }
 
 
 .container {
   margin:20px auto 10px;
   /*background-image: url(../imagenes/fondo1.jpg);*/
-  background: #88d222 !important;
+  background: #D27149 !important;
   padding: 15px 30px 25px 30px;
   border:1px solid #fff;
   border-radius: 10px;
